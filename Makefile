@@ -12,3 +12,5 @@ tailio: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
 
+clean:
+	rm $(OBJ) tailio
