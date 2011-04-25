@@ -1,5 +1,7 @@
 
 #include "http.hpp"
+#include "log.hpp"
+
 using namespace std;
 
 namespace tailio {
@@ -9,21 +11,11 @@ namespace tailio {
 		char* buffer = (char*) ptr;
 		const size_t max = size * nmemb;
 		size_t totalRead = 0;
-		
-		while (in.good() && totalRead < max) {
-			size_t read = in.readsome(buffer,max - totalRead);
-			if (!read) {
-				if (totalRead || !in.good()) {
-					break;
-				} else {
-					buffer[0] = in.get();
-					read++;
-				}
-			}
-			totalRead += read;
-			buffer += read;
-		}
-		return totalRead;
+		in.getline(buffer,max);
+		int read = strlen(buffer);
+		debug("Read %d bytes", read);
+		buffer[read] = '\n';
+		return read + 1;
 	}
 
 
@@ -36,9 +28,9 @@ namespace tailio {
 	}
 
 
-	Http::Http(const char* url) {
+	Http::Http(const string& url, int bufferSize) {
 		curl = curl_easy_init();
-		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 	}
 
 	Http::~Http() {
@@ -48,7 +40,7 @@ namespace tailio {
 		}
 	}
 
-	void Http::init(const istream* in, const ostream* out) {
+	void Http::init(istream* in, ostream* out) {
 		if (in) {
 			curl_easy_setopt(curl,CURLOPT_READFUNCTION,read_data);
 			curl_easy_setopt(curl,CURLOPT_READDATA,in);
@@ -60,11 +52,9 @@ namespace tailio {
 		}
 	}
 
-	void Http::put(const istream* istream, const ostream* ostream) {
+	void Http::put(istream* istream, ostream* ostream) {
 		init(istream,ostream);
 		curl_easy_setopt(curl,CURLOPT_PUT,1);
 		curl_easy_perform(curl);
 	}
-
-
 }

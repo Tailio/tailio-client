@@ -14,10 +14,11 @@ namespace tailio {
 		Thread(ReturnValue (*run)(void*));
 		virtual ~Thread();
 		void start(ArgType arg);
-		void join(ReturnValue* value);
+		void join(ReturnValue* value = NULL);
 	private:
-		ReturnValue (*run)(void*);
+		ReturnValue (*run)(ArgType);
 		pthread_t handle;
+		bool joined;
 	};
 }
 

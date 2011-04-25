@@ -4,17 +4,18 @@
 #include <iostream>
 #include <curl/curl.h>
 
+#include "mutex.hpp"
+
 using namespace std;
 
 namespace tailio {
 	class Http {
 	public: 
-		Http(const char* url);
+		Http(const string& url, int bufferSize = 2048);
 		virtual ~Http();
-		void put(const istream* in, const ostream* out);
+		void put(istream* in, ostream* out);
 	private:
-		void init(const istream* in, const ostream* out);
-
+		void init(istream* in, ostream* out);
 		CURL* curl;
 	};
 }
