@@ -1,0 +1,17 @@
+*.o
+*.tar.gz
+.deps
+aclocal.m4
+autom4te.cache
+config.*
+configure
+depcomp
+install-sh
+missing
+.dirstamp
+Makefile
+Makefile.in
+stamp-h1
+tailio
+tailio_test
+
